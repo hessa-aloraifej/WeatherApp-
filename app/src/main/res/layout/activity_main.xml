@@ -24,12 +24,13 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
+            android:textColor="@color/black"
             android:drawableTop="@drawable/ic_gauge_pressure_svgrepo_com"
             android:gravity="center" />
 
         <TextView
             android:id="@+id/humidity"
-
+            android:textColor="@color/black"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -41,6 +42,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
+            android:textColor="@color/black"
             android:drawableTop="@drawable/ic_refresh_svgrepo_com"
             android:gravity="center" />
 
@@ -61,11 +63,13 @@ android:layout_margin="20dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
+            android:textColor="@color/black"
             android:drawableTop="@drawable/ic_sunrise_svgrepo_com"
             android:gravity="center" />
 
         <TextView
             android:id="@+id/sunsetid"
+            android:textColor="@color/black"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -77,6 +81,7 @@ android:layout_margin="20dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
+            android:textColor="@color/black"
             android:drawableTop="@drawable/ic_wind_svgrepo_com"
             android:gravity="center" />
     </LinearLayout>
@@ -96,6 +101,7 @@ android:layout_margin="20dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
+            android:textColor="@color/black"
             android:gravity="center"
             android:textSize="20sp" />
     </LinearLayout>
@@ -112,6 +118,7 @@ android:layout_margin="20dp"
 
         <TextView
             android:id="@+id/dateid"
+            android:textColor="@color/black"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="20dp"
@@ -164,13 +171,14 @@ android:layout_margin="20dp"
         <TextView
             android:id="@+id/minid"
             android:gravity="center"
-
+            android:textColor="@color/black"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1" />
 
         <TextView
             android:id="@+id/maxid"
+            android:textColor="@color/black"
             android:gravity="center"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -192,11 +200,13 @@ android:layout_margin="20dp"
             android:id="@+id/descriptionid"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:textColor="@color/black"
             android:gravity="center"
             android:textSize="20sp" />
 
         <TextView
             android:id="@+id/tempid"
+            android:textColor="@color/black"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center"

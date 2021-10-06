@@ -4,10 +4,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.text.BoringLayout.make
 import android.view.View
-import android.widget.Button
-import android.widget.EditText
-import android.widget.TextView
-import android.widget.Toast
+import android.widget.*
 import androidx.constraintlayout.widget.ConstraintLayout
 import kotlinx.coroutines.*
 import org.json.JSONObject
@@ -58,30 +55,19 @@ class MainActivity : AppCompatActivity() {
         temptext=findViewById(R.id.tempid)
         temp_maxtext=findViewById(R.id.maxid)
         temp_mintext=findViewById(R.id.minid)
-
         zipcode=findViewById(R.id.zipcode)
         weatherbtn = findViewById(R.id.button)
+
+
+
         backbutton.setVisibility(View.GONE);
         showerror.setVisibility(View.GONE);
-
-        requestApi()
-
         weatherbtn.setVisibility(View.GONE);
         zipcode.setVisibility(View.GONE);
+        requestApi()
 
         countrytext.setOnClickListener(){
-             countrytext.setVisibility(View.GONE);
-            datetext.setVisibility(View.GONE);
-            descriptiontext.setVisibility(View.GONE);
-            temptext.setVisibility(View.GONE);
-            temp_mintext.setVisibility(View.GONE);
-            temp_maxtext.setVisibility(View.GONE);
-            pressuretext.setVisibility(View.GONE);
-            humiditytext.setVisibility(View.GONE);
-            refreshtext.setVisibility(View.GONE);
-            sunsettext.setVisibility(View.GONE);
-            sunrisetext.setVisibility(View.GONE);
-            windtext.setVisibility(View.GONE);
+            visibility()
             weatherbtn.setVisibility(View.VISIBLE);
             zipcode.setVisibility(View.VISIBLE);}
 
@@ -93,25 +79,16 @@ class MainActivity : AppCompatActivity() {
                   showerror.setVisibility(View.VISIBLE);
                   weatherbtn.setVisibility(View.GONE);
                   zipcode.setVisibility(View.GONE);
+
                   backbutton.setOnClickListener {
                       backbutton.setVisibility(View.GONE);
                       showerror.setVisibility(View.GONE);
-                      countrytext.setVisibility(View.GONE);
-                      datetext.setVisibility(View.GONE);
-                      descriptiontext.setVisibility(View.GONE);
-                      temptext.setVisibility(View.GONE);
-                      temp_mintext.setVisibility(View.GONE);
-                      temp_maxtext.setVisibility(View.GONE);
-                      pressuretext.setVisibility(View.GONE);
-                      humiditytext.setVisibility(View.GONE);
-                      refreshtext.setVisibility(View.GONE);
-                      sunsettext.setVisibility(View.GONE);
-                      sunrisetext.setVisibility(View.GONE);
-                      windtext.setVisibility(View.GONE);
+                     visibility()
                       weatherbtn.setVisibility(View.VISIBLE);
                       zipcode.setVisibility(View.VISIBLE);
                   }
               }
+              else{requestApi()}
 
           }
 
@@ -131,7 +108,7 @@ refreshtext.setOnClickListener {
 
             val data = async {
 
-                fetchRandomAdvice()
+                fetchWeather()
 
 
 
@@ -140,17 +117,18 @@ refreshtext.setOnClickListener {
             if (data.isNotEmpty())
             {
 
-                updateAdviceText(data)
+                updateWeather(data)
             }
 
         }
 
     }
 
-    private fun fetchRandomAdvice():String {
-
+    private suspend fun fetchWeather():String {
+        updateStatus(0)
         var response = ""
         try {
+            updateStatus(1)
             response =
                 URL("https://api.openweathermap.org/data/2.5/weather?zip=$zip,us&appid=8b32de4451f38d42e843472999962a3e").readText(
                     Charsets.UTF_8
@@ -158,12 +136,12 @@ refreshtext.setOnClickListener {
             println(response)
 
         } catch (e: Exception) {
-
-        Toast.makeText(this,"You Should Enter Valid ZipCode",Toast.LENGTH_LONG).show()
+            updateStatus(-1)
+            println("Error:$e")
             }
            return response
         }
-        private suspend fun updateAdviceText(data: String) {
+        private suspend fun updateWeather(data: String) {
             withContext(Dispatchers.Main)
             {
 
@@ -174,12 +152,12 @@ refreshtext.setOnClickListener {
                 var wind = jsonObject.getJSONObject("wind")
                 var windview = wind.getInt("speed")
                 var name = jsonObject.getString("name")
-                val convertdate = SimpleDateFormat("M/ d/y , hh:mm a", Locale.US).format(date)
+                val convertdate = SimpleDateFormat("M/ d/y , hh:mm a", Locale.US).format(date*1000)
                 var countryview = country.getString("country")
                 val sunrise = country.getLong("sunrise")
-                val sunriseview = SimpleDateFormat(" hh:mm a", Locale.US).format(sunrise)
+                val sunriseview = SimpleDateFormat(" hh:mm a", Locale.US).format(sunrise*1000)
                 val sunset = country.getLong("sunset")
-                val sunsetview = SimpleDateFormat(" hh:mm a", Locale.US).format(sunset)
+                val sunsetview = SimpleDateFormat(" hh:mm a", Locale.US).format(sunset*1000)
                 val weather = jsonObject.getJSONArray("weather").getJSONObject(0)
                 val description = weather.getString("description")
                 val currentTemp = tem.getInt("temp")
@@ -204,6 +182,66 @@ refreshtext.setOnClickListener {
 
         }
 
+    private suspend fun updateStatus(state: Int){
+//        states: -1 = loading, 0 = loaded, 1 = error
+        withContext(Dispatchers.Main){
+            when{
+                state < 0 -> {
+                    backbutton.setVisibility(View.VISIBLE);
+                    showerror.setVisibility(View.VISIBLE);
+                    weatherbtn.setVisibility(View.GONE);
+                    zipcode.setVisibility(View.GONE);
+                    visibility()
+
+
+
+                }
+                state == 0 -> {
+                    gone()
+                    weatherbtn.setVisibility(View.GONE);
+                    zipcode.setVisibility(View.GONE);
+                    backbutton.setVisibility(View.GONE);
+                    showerror.setVisibility(View.GONE);
+                }
+                state > 0 -> {
+                    gone()
+                    weatherbtn.setVisibility(View.GONE);
+                    zipcode.setVisibility(View.GONE);
+                    backbutton.setVisibility(View.GONE);
+                    showerror.setVisibility(View.GONE);
+
+                }
+            }
+        }
+    }
+    private fun visibility(){
+        countrytext.setVisibility(View.GONE);
+        datetext.setVisibility(View.GONE);
+        descriptiontext.setVisibility(View.GONE);
+        temptext.setVisibility(View.GONE);
+        temp_mintext.setVisibility(View.GONE);
+        temp_maxtext.setVisibility(View.GONE);
+        pressuretext.setVisibility(View.GONE);
+        humiditytext.setVisibility(View.GONE);
+        refreshtext.setVisibility(View.GONE);
+        sunsettext.setVisibility(View.GONE);
+        sunrisetext.setVisibility(View.GONE);
+        windtext.setVisibility(View.GONE);
+    }
+    fun gone(){
+        countrytext.setVisibility(View.VISIBLE);
+        datetext.setVisibility(View.VISIBLE);
+        descriptiontext.setVisibility(View.VISIBLE);
+        temptext.setVisibility(View.VISIBLE);
+        temp_mintext.setVisibility(View.VISIBLE);
+        temp_maxtext.setVisibility(View.VISIBLE);
+        pressuretext.setVisibility(View.VISIBLE);
+        humiditytext.setVisibility(View.VISIBLE);
+        refreshtext.setVisibility(View.VISIBLE);
+        sunsettext.setVisibility(View.VISIBLE);
+        sunrisetext.setVisibility(View.VISIBLE);
+        windtext.setVisibility(View.VISIBLE);
+    }
     }
 
 
